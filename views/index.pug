@@ -1,0 +1,14 @@
+
+<!DOCTYPE html>
+html(lang="en")
+    head
+        title="hello pug"
+    body
+        h1 google logging app
+        form(action="http://localhost:3000/auth/google" method="GET")
+            p First Name: 
+                input(type="text" name="first_name")
+            p Last Name: 
+                input(type="text" name="last_name")
+            input(type="submit" value="Log in")
+
