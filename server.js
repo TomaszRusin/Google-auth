@@ -4,7 +4,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const config = require('./config');
 const app = express();
-var googleProfile = {};
+var googleProfiles = [];
 
 app.set('view engine', 'pug');
 app.set('views', './views');
@@ -27,22 +27,38 @@ passport.use(new GoogleStrategy({
  },
 
     (accessToken, refreshToken, profile, cb) => {
-        googleProfile = {
-            id: profile.id,
-            displayName: profile.displayName
-        };
+        const checkId = (el) => {
+            if(profile.id === el.id){
+                return el
+            }else {
+                return
+            }
+        }
+        if(googleProfiles.filter(checkId)){
+            googleProfiles = [
+                ...googleProfiles, {
+                    id: profile.id,
+                    displayName: profile.displayName
+                }
+            ]
+        }
         cb(null, profile);
     }
 ))
 
 //app routes
 
+app.use('/logged',function(req, res, next){
+    console.log(googleProfiles)
+    next();
+ });
+
 app.get('/', (req, res ,next) => {
     res.render('index', { user: req.user });
 })
 
 app.get('/logged', (req, res, next) => {
-    res.render('logged', { user: googleProfile });
+    res.render('logged', { user: googleProfiles });
 })
 
 // passport routes
